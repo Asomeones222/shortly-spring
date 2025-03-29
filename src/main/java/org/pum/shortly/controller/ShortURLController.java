@@ -1,7 +1,7 @@
-package org.pum.shurl.controller;
+package org.pum.shortly.controller;
 
-import org.pum.shurl.exception.ResourceNotFoundException;
-import org.pum.shurl.service.ShortURLService;
+import org.pum.shortly.exception.ResourceNotFoundException;
+import org.pum.shortly.service.ShortURLService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;

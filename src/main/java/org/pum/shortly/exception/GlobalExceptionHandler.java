@@ -1,4 +1,4 @@
-package org.pum.shurl.exception;
+package org.pum.shortly.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -1,4 +1,4 @@
-package org.pum.shurl.exception;
+package org.pum.shortly.exception;
 
 public class ResourceNotFoundException extends RuntimeException {
     public ResourceNotFoundException(String shortURL) {

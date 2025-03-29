@@ -1,4 +1,4 @@
-package org.pum.shurl.service;
+package org.pum.shortly.service;
 
 import org.springframework.stereotype.Service;
 

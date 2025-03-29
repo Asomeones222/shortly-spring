@@ -1,13 +1,13 @@
-package org.pum.shurl;
+package org.pum.shortly;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class ShurlApplicationTests {
+class ShortlyApplicationTests {
 
-	@Test
-	void contextLoads() {
-	}
+    @Test
+    void contextLoads() {
+    }
 
 }
