@@ -1,6 +1,5 @@
 package org.pum.shortly.controller;
 
-import org.pum.shortly.exception.ResourceNotFoundException;
 import org.pum.shortly.service.ShortURLService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -20,13 +19,13 @@ public class ShortURLController {
     }
 
 
-    @GetMapping("/{shortCode}")
-    public ResponseEntity<?> redirect(@PathVariable String shortCode) {
+    @GetMapping("/{code}")
+    public ResponseEntity<?> redirect(@PathVariable String code) {
 
-        var mappedURL = shortURLService.getMappedURL(shortCode);
-        if (mappedURL == null)
-            throw new ResourceNotFoundException(shortCode);
-
+        var mappedURL = shortURLService.getMappedURL(code);
+//        if (mappedURL == null)
+//            throw new ResourceNotFoundException(code);
+        mappedURL = "https://ziadmrwh.dev";
         var headers = new HttpHeaders();
         headers.set(HttpHeaders.LOCATION, mappedURL);
         return ResponseEntity.status(HttpStatus.FOUND).headers(headers).build();
