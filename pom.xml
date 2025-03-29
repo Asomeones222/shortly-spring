@@ -9,9 +9,9 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>org.pum</groupId>
-    <artifactId>shurl</artifactId>
+    <artifactId>shortly</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>shurl</name>
+    <name>shortly</name>
     <description>A URL Shortner</description>
     <url/>
     <licenses>
