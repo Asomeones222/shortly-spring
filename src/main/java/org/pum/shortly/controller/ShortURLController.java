@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@CrossOrigin("https://shortly.ziadmrwh.dev")
 public class ShortURLController {
     private final ShortURLService shortURLService;
 
