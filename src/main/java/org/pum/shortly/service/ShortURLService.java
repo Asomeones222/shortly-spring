@@ -1,5 +1,6 @@
 package org.pum.shortly.service;
 
+import org.pum.shortly.exception.CodeGenerationFailureException;
 import org.pum.shortly.model.ShortURL;
 import org.pum.shortly.repository.ShortURLRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,11 +23,19 @@ public class ShortURLService {
         return this.shortURLRepository.findByCode(code).map(ShortURL::getMappedURL).orElse(null);
     }
 
-    public ShortURL createShortURL(String url) {
-        var code = generateCode();
-        var shortURL = ShortURL.builder().code(code).mappedURL(url).build();
-        this.shortURLRepository.save(shortURL);
-        return shortURL;
+    public ShortURL createShortURL(String url) throws CodeGenerationFailureException {
+        final int MAX_TRIES = 5;
+        int numberOfTries = 1;
+        while (numberOfTries <= MAX_TRIES) {
+            var code = generateCode();
+            if (this.shortURLRepository.existsByCode(code)) numberOfTries++;
+            else {
+                var shortURL = ShortURL.builder().code(code).mappedURL(url).build();
+                this.shortURLRepository.save(shortURL);
+                return shortURL;
+            }
+        }
+        throw new CodeGenerationFailureException();
     }
 
     private String generateCode() {
