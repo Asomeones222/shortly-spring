@@ -1,7 +1,7 @@
 package org.pum.shortly.controller;
 
 import jakarta.validation.Valid;
-import org.pum.shortly.exception.ResourceNotFoundException;
+import org.pum.shortly.exception.CodeNotFoundException;
 import org.pum.shortly.model.ShortURLDTO;
 import org.pum.shortly.service.AnalyticsService;
 import org.pum.shortly.service.ShortURLService;
@@ -12,7 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@CrossOrigin("https://shortly.ziadmrwh.dev")
 public class ShortURLController {
     private final ShortURLService shortURLService;
     private final AnalyticsService analyticsService;
@@ -25,8 +24,8 @@ public class ShortURLController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<?> createShortURL(@RequestBody @Valid ShortURLDTO shortURLRequest) {
-        var createdShortURL = shortURLService.createShortURL(shortURLRequest.getUrl());
+    public ResponseEntity<?> createShortURL(@RequestBody @Valid ShortURLDTO shortURLD) {
+        var createdShortURL = shortURLService.createShortURL(shortURLD.getUrl());
         return ResponseEntity.status(HttpStatus.CREATED).body(createdShortURL);
     }
 
@@ -34,7 +33,7 @@ public class ShortURLController {
     public ResponseEntity<?> redirect(@PathVariable String code) {
         var shortURL = shortURLService.getShortURL(code);
         if (shortURL.isEmpty())
-            throw new ResourceNotFoundException(code);
+            throw new CodeNotFoundException(code);
 
         this.analyticsService.recordClick(shortURL.get(), "JO");
 

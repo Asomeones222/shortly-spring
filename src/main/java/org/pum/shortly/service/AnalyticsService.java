@@ -1,7 +1,7 @@
 package org.pum.shortly.service;
 
 import org.pum.shortly.model.ShortURL;
-import org.pum.shortly.model.URLClick;
+import org.pum.shortly.model.AnalyticsRecord;
 import org.pum.shortly.repository.AnalyticsRepository;
 import org.pum.shortly.repository.ShortURLRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +20,7 @@ public class AnalyticsService {
     }
 
     public void recordClick(ShortURL mapping, String country) {
-        URLClick click = URLClick.builder()
+        AnalyticsRecord click = AnalyticsRecord.builder()
                 .shortURL(mapping)
                 .country(country)
                 .localDateTime(LocalDateTime.now())
