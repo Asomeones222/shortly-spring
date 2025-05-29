@@ -1,7 +1,6 @@
 package org.pum.shortly.model;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
+import jakarta.persistence.Entity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,15 +13,9 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class URLClick {
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Id
+public class AnalyticsRecordDTO {
     private Long id;
-
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "shorturl_id", nullable = false)
     private ShortURL shortURL;
     private String country;
-    @NotNull
     private LocalDateTime localDateTime;
 }

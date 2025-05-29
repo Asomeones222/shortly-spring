@@ -1,12 +1,13 @@
 package org.pum.shortly.service;
 
-import org.pum.shortly.exception.CodeGenerationFailureException;
+import org.pum.shortly.exception.ShortURLGenerationFailureException;
 import org.pum.shortly.model.ShortURL;
 import org.pum.shortly.repository.ShortURLRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
+import java.util.Optional;
 
 @Service
 public class ShortURLService {
@@ -14,28 +15,33 @@ public class ShortURLService {
     private final SecureRandom secureRandom;
 
     @Autowired
-    public ShortURLService(ShortURLRepository shortURLRepository, SecureRandom secureRandom) {
+    public ShortURLService(ShortURLRepository shortURLRepository,
+                           SecureRandom secureRandom) {
         this.shortURLRepository = shortURLRepository;
         this.secureRandom = secureRandom;
     }
 
-    public ShortURL getShortURL(String code) {
-        return this.shortURLRepository.findByCode(code).orElse(null);
+    public Optional<ShortURL> getShortURL(String code) {
+        return this.shortURLRepository.findByCode(code);
     }
 
-    public ShortURL createShortURL(String url) throws CodeGenerationFailureException {
+    public ShortURL createShortURL(String url) throws ShortURLGenerationFailureException {
         final int MAX_TRIES = 5;
         int numberOfTries = 1;
         while (numberOfTries <= MAX_TRIES) {
             var code = generateCode();
             if (this.shortURLRepository.existsByCode(code)) numberOfTries++;
             else {
-                var shortURL = ShortURL.builder().code(code).mappedURL(url).build();
+                var shortURL = ShortURL
+                        .builder()
+                        .code(code)
+                        .mappedURL(url)
+                        .build();
                 this.shortURLRepository.save(shortURL);
                 return shortURL;
             }
         }
-        throw new CodeGenerationFailureException();
+        throw new ShortURLGenerationFailureException();
     }
 
     private String generateCode() {

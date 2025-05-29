@@ -12,8 +12,8 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
     }
 
-    @ExceptionHandler(CodeGenerationFailureException.class)
-    public ResponseEntity<?> handleCodeGenerationFailureException(CodeGenerationFailureException e) {
+    @ExceptionHandler(ShortURLGenerationFailureException.class)
+    public ResponseEntity<?> handleCodeGenerationFailureException(ShortURLGenerationFailureException e) {
         return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(e.getMessage());
     }
 }
