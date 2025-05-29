@@ -3,6 +3,7 @@ package org.pum.shortly.controller;
 import jakarta.validation.Valid;
 import org.pum.shortly.exception.ResourceNotFoundException;
 import org.pum.shortly.model.ShortURLRequest;
+import org.pum.shortly.service.AnalyticsService;
 import org.pum.shortly.service.ShortURLService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -14,10 +15,13 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin("https://shortly.ziadmrwh.dev")
 public class ShortURLController {
     private final ShortURLService shortURLService;
+    private final AnalyticsService analyticsService;
 
     @Autowired
-    public ShortURLController(ShortURLService shortURLService) {
+    public ShortURLController(ShortURLService shortURLService,
+                              AnalyticsService analyticsService) {
         this.shortURLService = shortURLService;
+        this.analyticsService = analyticsService;
     }
 
     @PostMapping("/create")
@@ -28,9 +32,11 @@ public class ShortURLController {
 
     @GetMapping("/{code}")
     public ResponseEntity<?> redirect(@PathVariable String code) {
-        var mappedURL = shortURLService.getMappedURL(code);
-        if (mappedURL == null)
+        var shortURL = shortURLService.getShortURL(code);
+        if (shortURL == null)
             throw new ResourceNotFoundException(code);
+        var mappedURL = shortURL.getMappedURL();
+        this.analyticsService.recordClick(shortURL, "JO");
         var headers = new HttpHeaders();
         headers.set(HttpHeaders.LOCATION, mappedURL);
         return ResponseEntity.status(HttpStatus.FOUND).headers(headers).build();

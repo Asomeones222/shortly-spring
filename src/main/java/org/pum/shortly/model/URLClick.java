@@ -1,29 +1,28 @@
 package org.pum.shortly.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.validator.constraints.URL;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Data
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ShortURL {
-    @Id
+@Builder
+public class URLClick {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
     private Long id;
-    @URL
+
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "shorturl_id", nullable = false)
+    private ShortURL shortURL;
+    private String country;
     @NotNull
-    @NotBlank
-    private String mappedURL;
-    @NotNull
-    @NotBlank
-    @Column(unique = true, nullable = false)
-    private String code;
+    private LocalDateTime localDateTime;
 }

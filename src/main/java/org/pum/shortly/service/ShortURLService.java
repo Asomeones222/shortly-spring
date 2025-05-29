@@ -19,8 +19,8 @@ public class ShortURLService {
         this.secureRandom = secureRandom;
     }
 
-    public String getMappedURL(String code) {
-        return this.shortURLRepository.findByCode(code).map(ShortURL::getMappedURL).orElse(null);
+    public ShortURL getShortURL(String code) {
+        return this.shortURLRepository.findByCode(code).orElse(null);
     }
 
     public ShortURL createShortURL(String url) throws CodeGenerationFailureException {
