@@ -30,25 +30,27 @@ public class ShortURLService {
         int numberOfTries = 1;
         while (numberOfTries <= MAX_TRIES) {
             var code = generateCode();
-            if (this.shortURLRepository.existsByCode(code)) numberOfTries++;
-            else {
-                var shortURL = ShortURL
-                        .builder()
-                        .code(code)
-                        .mappedURL(url)
-                        .build();
-                this.shortURLRepository.save(shortURL);
-                return shortURL;
+            if (this.shortURLRepository.existsByCode(code)) {
+                numberOfTries++;
+                continue;
             }
+            var shortURL = ShortURL
+                    .builder()
+                    .code(code)
+                    .mappedURL(url)
+                    .build();
+            this.shortURLRepository.save(shortURL);
+            return shortURL;
         }
         throw new ShortURLGenerationFailureException();
     }
 
     private String generateCode() {
-        final int CODE_LENGTH = 7;
+        final int MAX_CODE_LENGTH = 7;
+        final int MIN_CODE_LENGTH = 4;
+        final int CODE_LENGTH = secureRandom.nextInt(MIN_CODE_LENGTH, MAX_CODE_LENGTH + 1);
 //        Based on the latest RFC standard section 2.3
         final String UNRESERVED_CHARS = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-._~";
-
         StringBuilder sb = new StringBuilder(CODE_LENGTH);
         for (int i = 0; i < CODE_LENGTH; i++) {
             int index = secureRandom.nextInt(UNRESERVED_CHARS.length());

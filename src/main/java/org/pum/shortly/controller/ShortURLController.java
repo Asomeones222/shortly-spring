@@ -1,5 +1,6 @@
 package org.pum.shortly.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.pum.shortly.exception.CodeNotFoundException;
 import org.pum.shortly.model.ShortURLDTO;
@@ -10,32 +11,39 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ua_parser.Parser;
 
 @RestController
 public class ShortURLController {
+    private final Parser uaParser;
     private final ShortURLService shortURLService;
     private final AnalyticsService analyticsService;
 
     @Autowired
     public ShortURLController(ShortURLService shortURLService,
-                              AnalyticsService analyticsService) {
+                              AnalyticsService analyticsService,
+                              Parser uaParser
+    ) {
         this.shortURLService = shortURLService;
         this.analyticsService = analyticsService;
+        this.uaParser = uaParser;
     }
 
     @PostMapping("/create")
-    public ResponseEntity<?> createShortURL(@RequestBody @Valid ShortURLDTO shortURLD) {
-        var createdShortURL = shortURLService.createShortURL(shortURLD.getUrl());
+    public ResponseEntity<?> createShortURL(@RequestBody @Valid ShortURLDTO shortURLDTO) {
+        var createdShortURL = shortURLService.createShortURL(shortURLDTO.getUrl());
         return ResponseEntity.status(HttpStatus.CREATED).body(createdShortURL);
     }
 
     @GetMapping("/{code}")
-    public ResponseEntity<?> redirect(@PathVariable String code) {
+    public ResponseEntity<?> redirect(@PathVariable String code, HttpServletRequest request) {
         var shortURL = shortURLService.getShortURL(code);
         if (shortURL.isEmpty())
             throw new CodeNotFoundException(code);
 
-        this.analyticsService.recordClick(shortURL.get(), "JO");
+        var clientUserAgent = new Parser().parse(request.getHeader("user-agent"));
+        this.analyticsService.recordClick(shortURL.get(), request.getRemoteAddr(), clientUserAgent, "JO");
+
 
         var mappedURL = shortURL.get().getMappedURL();
         var headers = new HttpHeaders();

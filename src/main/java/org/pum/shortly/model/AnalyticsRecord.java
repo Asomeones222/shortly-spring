@@ -19,10 +19,13 @@ public class AnalyticsRecord {
     @Id
     private Long id;
 
+    @NotNull
     @ManyToOne(optional = false)
     @JoinColumn(name = "shorturl_id", nullable = false)
     private ShortURL shortURL;
-    private String country;
     @NotNull
     private LocalDateTime localDateTime;
+    private String country;
+    private String ip;
+
 }
