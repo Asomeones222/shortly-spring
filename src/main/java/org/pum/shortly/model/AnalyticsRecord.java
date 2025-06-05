@@ -7,7 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Entity
 @Data
@@ -24,8 +24,16 @@ public class AnalyticsRecord {
     @JoinColumn(name = "shorturl_id", nullable = false)
     private ShortURL shortURL;
     @NotNull
-    private LocalDateTime localDateTime;
-    private String country;
+    private Instant accessTime;
+    @NotNull
     private String ip;
+    private String country;
+    private String OS;
+    private String device;
+    private String browser;
 
+    @PrePersist
+    private void onCreate() {
+        this.accessTime = Instant.now();
+    }
 }

@@ -1,4 +1,4 @@
-package org.pum.shortly.model;
+package org.pum.shortly.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;

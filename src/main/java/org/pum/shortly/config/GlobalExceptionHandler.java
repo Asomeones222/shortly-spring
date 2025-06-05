@@ -1,5 +1,7 @@
-package org.pum.shortly.exception;
+package org.pum.shortly.config;
 
+import org.pum.shortly.exception.CodeNotFoundException;
+import org.pum.shortly.exception.ShortURLGenerationFailureException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -13,7 +15,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(ShortURLGenerationFailureException.class)
-    public ResponseEntity<?> handleCodeGenerationFailureException(ShortURLGenerationFailureException e) {
+    public ResponseEntity<?> handleShortURLGenerationFailureException(ShortURLGenerationFailureException e) {
         return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(e.getMessage());
     }
 }

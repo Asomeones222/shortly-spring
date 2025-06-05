@@ -1,9 +1,10 @@
 package org.pum.shortly.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import org.hibernate.validator.constraints.URL;
+import org.pum.shortly.dto.ShortURLDTO;
 import org.pum.shortly.exception.CodeNotFoundException;
-import org.pum.shortly.model.ShortURLDTO;
 import org.pum.shortly.service.AnalyticsService;
 import org.pum.shortly.service.ShortURLService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,24 +31,25 @@ public class ShortURLController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<?> createShortURL(@RequestBody @Valid ShortURLDTO shortURLDTO) {
-        var createdShortURL = shortURLService.createShortURL(shortURLDTO.getUrl());
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdShortURL);
+    public ResponseEntity<ShortURLDTO> createShortURL(
+            @RequestParam(name = "url") @URL @NotBlank String url) {
+        var createdShortURLDTO = shortURLService.createShortURL(url).mapToDTO();
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdShortURLDTO);
     }
 
     @GetMapping("/{code}")
-    public ResponseEntity<?> redirect(@PathVariable String code, HttpServletRequest request) {
+    public ResponseEntity<Void> redirect(@PathVariable String code, HttpServletRequest request) {
         var shortURL = shortURLService.getShortURL(code);
         if (shortURL.isEmpty())
             throw new CodeNotFoundException(code);
 
-        var clientUserAgent = new Parser().parse(request.getHeader("user-agent"));
+        var userAgent = request.getHeader(HttpHeaders.USER_AGENT);
+        var clientUserAgent = uaParser.parse(userAgent);
         this.analyticsService.recordClick(shortURL.get(), request.getRemoteAddr(), clientUserAgent, "JO");
 
-
-        var mappedURL = shortURL.get().getMappedURL();
+        var url = shortURL.get().getUrl();
         var headers = new HttpHeaders();
-        headers.set(HttpHeaders.LOCATION, mappedURL);
+        headers.set(HttpHeaders.LOCATION, url);
 
         return ResponseEntity.status(HttpStatus.FOUND).headers(headers).build();
     }

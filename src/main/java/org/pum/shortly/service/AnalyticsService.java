@@ -7,8 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ua_parser.Client;
 
-import java.time.LocalDateTime;
-
 @Service
 public class AnalyticsService {
 
@@ -19,12 +17,15 @@ public class AnalyticsService {
         this.analyticsRepository = analyticsRepository;
     }
 
-    public void recordClick(ShortURL shortURL, String clientIP, Client clientUserAgent, String countryCode) {
+    public void recordClick(ShortURL shortURL, String clientIP,
+                            Client clientUserAgent, String countryCode) {
         var click = AnalyticsRecord.builder()
                 .shortURL(shortURL)
                 .country(countryCode)
                 .ip(clientIP)
-                .localDateTime(LocalDateTime.now())
+                .browser(clientUserAgent.userAgent.family)
+                .OS(clientUserAgent.os.family)
+                .device(clientUserAgent.device.family)
                 .build();
         analyticsRepository.save(click);
     }
