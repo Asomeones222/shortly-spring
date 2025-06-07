@@ -45,12 +45,12 @@ public class ShortURLController {
 
         var userAgent = request.getHeader(HttpHeaders.USER_AGENT);
         var clientUserAgent = uaParser.parse(userAgent);
-        this.analyticsService.recordClick(shortURL.get(), request.getRemoteAddr(), clientUserAgent, "JO");
+        this.analyticsService.recordClick(shortURL.get(), request.getRemoteAddr(), clientUserAgent);
 
         var url = shortURL.get().getUrl();
         var headers = new HttpHeaders();
         headers.set(HttpHeaders.LOCATION, url);
 
-        return ResponseEntity.status(HttpStatus.FOUND).headers(headers).build();
+        return ResponseEntity.status(HttpStatus.PERMANENT_REDIRECT).headers(headers).build();
     }
 }

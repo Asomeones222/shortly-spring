@@ -12,12 +12,13 @@ import org.pum.shortly.dto.ShortURLDTO;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(indexes = @Index(name = "idx_code", columnList = "code", unique = true))
 public class ShortURL {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String url;
-    @Column(unique = true, nullable = false)
+    @Column(nullable = false)
     private String code;
 
     public ShortURLDTO mapToDTO() {
